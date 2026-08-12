@@ -10,12 +10,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
-        title: const Text('Asyncof 2026'),
-      ),
-      body: Center(
+    return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -60,8 +55,7 @@ class HomePage extends StatelessWidget {
               )
             ],
           )
-      ),
-    );
+      );
   }
 }
 

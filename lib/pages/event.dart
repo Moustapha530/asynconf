@@ -33,12 +33,7 @@ class _EventPageState extends State<EventPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
-        title: const Text('Salon planing'),
-      ),
-      body: Center(
+    return Center(
         child: ListView.builder(
             itemCount: events.length,
             itemBuilder: (context, index) {
@@ -56,7 +51,6 @@ class _EventPageState extends State<EventPage> {
               );
             }
           ),
-      ),
-    );
+      );
   }
 }
