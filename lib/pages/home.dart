@@ -32,27 +32,6 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               Padding(padding: EdgeInsets.only(top: 30)),
-              ElevatedButton.icon(
-                style: ButtonStyle(
-                    padding: WidgetStatePropertyAll(EdgeInsets.all(20)),
-                    backgroundColor: WidgetStatePropertyAll(Colors.blueGrey)
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      PageRouteBuilder(pageBuilder: (_, _, _) => EventPage())
-                  );
-                },
-                label: Text(
-                  "Show planing",
-                  style: TextStyle(
-                      color: Colors.white70,
-                      fontFamily: 'Poppins',
-                      fontSize: 20
-                  ),
-                ),
-                icon: Icon(Icons.calendar_month, color: Colors.white),
-              )
             ],
           )
       );
