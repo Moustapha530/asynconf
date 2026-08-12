@@ -1,3 +1,4 @@
+import 'package:asynconf/pages/add_page.dart';
 import 'package:asynconf/pages/event.dart';
 import 'package:flutter/material.dart';
 import 'package:asynconf/pages/home.dart';
@@ -28,12 +29,25 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Asynconf 2026'),
+          title: Center(
+            child: Text([
+              'Home',
+              'Planning',
+              'Add event'
+            ][_currentIndex],
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 26,
+              color: Colors.white70
+            ),
+          ),
+          ),
           backgroundColor: Colors.blueGrey,
         ),
         body: [
           HomePage(),
-          EventPage()
+          EventPage(),
+          AddEventPage()
           ][_currentIndex],
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
@@ -41,6 +55,7 @@ class _MyAppState extends State<MyApp> {
           selectedItemColor: Colors.blueGrey,
           iconSize: 32,
           elevation: 10,
+          type: BottomNavigationBarType.fixed,
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -49,6 +64,10 @@ class _MyAppState extends State<MyApp> {
             BottomNavigationBarItem(
               icon: Icon(Icons.calendar_month),
               label: 'Planning',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add_box_rounded),
+              label: 'Add event',
             )
           ]
         ),
