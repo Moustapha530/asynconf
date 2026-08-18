@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "271103173460",
+    "project_id": "asynconf-312ff",
+    "storage_bucket": "asynconf-312ff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271103173460:android:09839dbe7533f94018dec1",
+        "android_client_info": {
+          "package_name": "com.example.asynconf"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_Zn_0NQoQoq0M_7oPuVcxxx2JFzta7NQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
