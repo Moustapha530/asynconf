@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 
@@ -10,47 +11,58 @@ class EventPage extends StatefulWidget {
 
 class _EventPageState extends State<EventPage> {
 
-  final events = [
-    {
-      'speaker': 'Lior chama',
-      'time': '13h - 13h30',
-      'subject': 'The code legacy',
-      'avatar': 'lior',
-    },
-    {
-      'speaker': 'Damien Cavaailles',
-      'time': '17h - 17h30',
-      'subject': 'git blame --no-offense',
-      'avatar': 'damien',
-    },
-    {
-      'speaker': 'Defend Intelligence',
-      'time': '18h - 18h30',
-      'subject': 'Discovering generative AI',
-      'avatar': 'defendintelligence',
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: ListView.builder(
-            itemCount: events.length,
-            itemBuilder: (context, index) {
-              final eventData = events[index];
-              return Card(
-                child: ListTile(
-                  leading: Image.asset('assets/images/${eventData['avatar']}.jpg'),
-                  title: Text('${eventData['speaker']} (${eventData['time']})'),
-                  subtitle: Text(eventData['subject'] ?? ''),
-                  trailing: const Icon(Icons.info_outline),
-                  onTap: () {
-                    // Handle events tap
-                  },
-                ),
+        child: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection('Events').snapshots(), 
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+            else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return const Text('No events found');
+            }
+            else if (snapshot.hasError) {
+              return const Text('Error fetching events');
+            }
+            else {
+              List<dynamic> events = [];
+              snapshot.data!.docs.forEach((doc) {
+                events.add(doc);
+              });
+              return ListView.builder(
+                itemCount: events.length,
+                itemBuilder: (context, index) {
+                  final event = events[index];
+                  final avatar = event['avatar'] ?? '';
+                  final conferenceName = event['subject'] ?? '';
+                  final speakerName = event['speaker'] ?? '';
+                  final confDate = event['date'] != null ? (event['date'] as Timestamp).toDate() : null;
+                  final confType = event['type'] ?? '';
+
+                  return Card(
+                    child: ListTile(
+                      title: Text(conferenceName),
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage('assets/images/$avatar.jpg'),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Speaker: $speakerName'),
+                          if (confDate != null)
+                            Text('Date: ${confDate.toLocal().toString().split(' ')[0]}'),
+                          Text('Type: $confType'),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               );
             }
-          ),
+          },
+        )
       );
   }
 }

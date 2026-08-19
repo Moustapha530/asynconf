@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
 
@@ -113,19 +114,39 @@ class _AddEventPageState extends State<AddEventPage> {
               height: 50,
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: (){
-                  if(_formKey.currentState!.validate()){
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')),
-                    );
-                    FocusScope.of(context).unfocus();
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
                     final conferenceName = _conferenceNameController.text;
                     final speakerName = _speakerNameController.text;
 
-                    print('Conference Name: $conferenceName');
-                    print('Speaker Name: $speakerName');
-                    print('Session Type: $confType');
-                    
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Adding event...')),
+                    );
+
+                    try {
+                      CollectionReference eventRef = FirebaseFirestore.instance.collection('Events');
+                      await eventRef.add({
+                        'speaker': speakerName,
+                        'subject': conferenceName,
+                        'date': selectedConfDate,
+                        'type': confType,
+                        'avatar': 'lior',
+                      });
+
+                      _conferenceNameController.clear();
+                      _speakerNameController.clear();
+
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Event added successfully!')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+                      );
+                    } finally {
+                      FocusScope.of(context).unfocus();
+                    }
                   }
                 }, 
                 child: Text('Add event'),
