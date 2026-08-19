@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../model/event_model.dart';
 
 
 class EventPage extends StatefulWidget {
@@ -10,6 +13,36 @@ class EventPage extends StatefulWidget {
 }
 
 class _EventPageState extends State<EventPage> {
+
+  Future<void> showEventInfo(Event event) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Conference: ${event.subject}'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Subject: ${event.subject}'),
+                Text('Speaker: ${event.speaker}'),
+                Text('Date: ${DateFormat.yMd().add_jm().format(event.date.toDate())}'),
+                Text('Type: ${event.type}'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,19 +60,19 @@ class _EventPageState extends State<EventPage> {
               return const Text('Error fetching events');
             }
             else {
-              List<dynamic> events = [];
-              snapshot.data!.docs.forEach((doc) {
-                events.add(doc);
-              });
+              List<Event> events = [];
+              for (var doc in snapshot.data!.docs) {
+                events.add(Event.fromData(doc));
+              }
               return ListView.builder(
                 itemCount: events.length,
                 itemBuilder: (context, index) {
                   final event = events[index];
-                  final avatar = event['avatar'] ?? '';
-                  final conferenceName = event['subject'] ?? '';
-                  final speakerName = event['speaker'] ?? '';
-                  final confDate = event['date'] != null ? (event['date'] as Timestamp).toDate() : null;
-                  final confType = event['type'] ?? '';
+                  final avatar = event.avatar;
+                  final conferenceName = event.subject;
+                  final speakerName = event.speaker;
+                  final confDate = event.date;
+                  final confType = event.type;
 
                   return Card(
                     child: ListTile(
@@ -47,12 +80,15 @@ class _EventPageState extends State<EventPage> {
                       leading: CircleAvatar(
                         backgroundImage: AssetImage('assets/images/$avatar.jpg'),
                       ),
+                      trailing: IconButton(
+                        onPressed: () { showEventInfo(event); }, 
+                        icon: Icon(Icons.info_outline_rounded),
+                      ),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Speaker: $speakerName'),
-                          if (confDate != null)
-                            Text('Date: ${confDate.toLocal().toString().split(' ')[0]}'),
+                          Text('Date: ${DateFormat.yMd().add_jm().format(confDate.toDate())}'),
                           Text('Type: $confType'),
                         ],
                       ),
